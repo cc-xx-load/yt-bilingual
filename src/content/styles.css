@@ -1,0 +1,122 @@
+/* 这些样式由 manifest 的 content_scripts.css 注入到 youtube.com，只作用于 .ytb-* 节点。 */
+
+.ytb-root {
+  --ytb-font-size: 22px;
+  --ytb-color: #ffffff;
+  --ytb-src-color: #dbeafe;
+  --ytb-bg: 0.65;
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  font-family: "YouTube Sans", "Roboto", "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+  line-height: 1.4;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 播放器不一定显式定位，兜底保证绝对定位以它为基准。 */
+.html5-video-player:has(> .ytb-root) {
+  position: relative;
+}
+
+.ytb-caption-window {
+  position: absolute;
+  left: 5%;
+  width: 90%;
+  bottom: 8%;
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: move;
+  user-select: none;
+  touch-action: none;
+}
+
+.ytb-caption-box {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 7px 18px;
+  border-radius: 12px;
+  /* 上半部分略淡、下半部分略深，亮画面下也不会整块发灰 */
+  background: linear-gradient(
+    rgba(0, 0, 0, calc(var(--ytb-bg) * 0.6)),
+    rgba(0, 0, 0, var(--ytb-bg))
+  ) !important;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+
+.ytb-source {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--ytb-src-color) !important;
+  font-size: calc(var(--ytb-font-size) * 0.72) !important;
+  font-weight: 400 !important;
+  /* 描边 + 光晕：即使字幕底色和文字颜色接近，也能看清 */
+  -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.55);
+  paint-order: stroke fill;
+  text-shadow:
+    0 0 2px rgba(0, 0, 0, 0.95),
+    0 0 5px rgba(0, 0, 0, 0.7),
+    0 1px 2px rgba(0, 0, 0, 0.9) !important;
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere;
+}
+
+.ytb-target {
+  display: block;
+  color: var(--ytb-color) !important;
+  font-size: var(--ytb-font-size) !important;
+  font-weight: 500 !important;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.6);
+  paint-order: stroke fill;
+  text-shadow:
+    0 0 3px rgba(0, 0, 0, 0.95),
+    0 0 8px rgba(0, 0, 0, 0.65),
+    0 1px 3px rgba(0, 0, 0, 0.9) !important;
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere;
+}
+
+.ytb-caption-box.ytb-loading .ytb-target {
+  opacity: 0.62;
+}
+
+.ytb-status {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 80%;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.86);
+  color: #e2e8f0;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.ytb-status.ytb-status--error {
+  background: rgba(127, 29, 29, 0.9);
+  color: #fee2e2;
+}
+
+/* 兜底模式：原生字幕保留原文，我们只把译文叠在它上方，不参与拖动。 */
+.ytb-root.ytb-fallback .ytb-caption-window {
+  cursor: default;
+  pointer-events: none;
+}
+
+.ytb-root.ytb-fallback .ytb-caption-box {
+  background: rgba(0, 0, 0, calc(var(--ytb-bg) * 0.85));
+}
+
+/* 开启扩展时隐藏 YouTube 原生字幕，避免双语重复。 */
+html.ytb-hide-native .ytp-caption-window-container {
+  display: none !important;
+}

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YouTube 双语字幕 · 设置</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header>
+        <h1>YouTube 双语字幕</h1>
+        <p class="muted">
+          翻译请求只会发送到你在这里配置的接口；字幕原文来自 YouTube 官方字幕轨。
+        </p>
+      </header>
+
+      <section class="card">
+        <h2>翻译接口</h2>
+        <div class="grid">
+          <label>
+            <span>接口类型</span>
+            <select id="provider">
+              <option value="google">Google 翻译（免费，无需 Key）</option>
+              <option value="openai">OpenAI 兼容</option>
+              <option value="mock">Mock（本地假翻译，用于测试）</option>
+            </select>
+          </label>
+          <label>
+            <span>Base URL</span>
+            <input id="baseURL" type="url" spellcheck="false" placeholder="https://api.openai.com/v1" />
+          </label>
+          <label>
+            <span>API Key</span>
+            <input id="apiKey" type="password" spellcheck="false" placeholder="sk-..." autocomplete="off" />
+          </label>
+          <label>
+            <span>模型</span>
+            <input id="model" type="text" spellcheck="false" placeholder="gpt-4o-mini" />
+          </label>
+          <label>
+            <span>目标语言</span>
+            <select id="targetLang">
+              <option value="zh-CN">简体中文</option>
+              <option value="zh-TW">繁體中文</option>
+              <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="ru">Русский</option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <button id="test" type="button" class="secondary">测试连接</button>
+          <span id="testResult" class="muted"></span>
+        </div>
+        <p class="hint">
+          默认使用 Google 免费接口，装好即可看效果（非官方接口，可能被限流）。
+          需要更好的质量时切到 OpenAI 兼容，支持 OpenAI、DeepSeek、Ollama（<code>http://localhost:11434/v1</code>）等任何
+          <code>/chat/completions</code> 服务；保存时会请求该域名的访问权限。
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>字幕与翻译</h2>
+        <div class="grid">
+          <label>
+            <span>单批最大字符</span>
+            <input id="batchMaxChars" type="number" min="200" max="6000" step="100" />
+          </label>
+          <label>
+            <span>预取窗口（秒）</span>
+            <input id="prefetchSeconds" type="number" min="10" max="600" step="10" />
+          </label>
+          <label>
+            <span>并发请求数</span>
+            <input id="concurrency" type="number" min="1" max="4" step="1" />
+          </label>
+          <label class="check">
+            <input id="showOriginal" type="checkbox" />
+            <span>显示原文行</span>
+          </label>
+          <label class="check">
+            <input id="hideNativeCaptions" type="checkbox" />
+            <span>隐藏 YouTube 原生字幕</span>
+          </label>
+        </div>
+        <p class="hint">
+          预取窗口越大越不容易卡顿，但一次会翻译更多内容（消耗更多 token）；已翻译内容会写入本地缓存，
+          回看或重播不会重复请求。
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>字幕外观</h2>
+        <div class="grid">
+          <label>
+            <span>字号（px）</span>
+            <input id="fontSize" type="number" min="12" max="60" step="1" />
+          </label>
+          <label>
+            <span>距底部（%）</span>
+            <input id="bottomPercent" type="number" min="2" max="90" step="1" />
+          </label>
+          <label>
+            <span>背景不透明度</span>
+            <input id="bgOpacity" type="number" min="0" max="1" step="0.05" />
+          </label>
+          <label>
+            <span>译文颜色</span>
+            <input id="textColor" type="color" />
+          </label>
+          <label>
+            <span>原文颜色</span>
+            <input id="sourceColor" type="color" />
+          </label>
+        </div>
+        <p class="hint">
+          亮画面下如果觉得字幕和背景“糊在一起”，把「背景不透明度」调到 0.8~0.9；文字本身已带描边，
+          即使底色全透明也能看清。
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>维护</h2>
+        <div class="row">
+          <button id="save" type="button">保存设置</button>
+          <button id="clearCache" type="button" class="secondary">清空翻译缓存</button>
+          <span id="saveResult" class="muted"></span>
+        </div>
+      </section>
+
+      <footer class="muted">
+        快捷键 <kbd>Alt</kbd> + <kbd>B</kbd> 开关当前视频的双语字幕。修改设置后已打开的 YouTube 页面会自动生效。
+      </footer>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

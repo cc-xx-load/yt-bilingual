@@ -1,0 +1,33 @@
+{
+  "name": "yt-bilingual",
+  "version": "0.1.0",
+  "private": true,
+  "description": "YouTube 双语字幕扩展（MV3）：默认 Google 免费翻译，可切换 OpenAI 兼容接口",
+  "license": "MIT",
+  "author": "cc-xx-load",
+  "type": "module",
+  "engines": {
+    "node": ">=22.8"
+  },
+  "keywords": [
+    "youtube",
+    "subtitles",
+    "bilingual",
+    "translation",
+    "chrome-extension",
+    "manifest-v3"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --test-isolation=none test/",
+    "verify": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.3.6",
+    "@types/node": "^26.6.5",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  }
+}
